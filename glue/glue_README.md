@@ -141,6 +141,6 @@ MSCK REPAIR TABLE db_youtube_cleaned.raw_statistics;
 
 ## Files
 
-- Script: `etl_raw_csv_to_parquet.py` (place under `glue/` in your repo)
+- Script: `etl_raw_csv_to_parquet.py` (place under `glue/`)
 - This README: `glue_README.md`
 
