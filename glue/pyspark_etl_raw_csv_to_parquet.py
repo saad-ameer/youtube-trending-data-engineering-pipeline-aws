@@ -10,15 +10,11 @@ from awsglue.dynamicframe import DynamicFrame
 # ====== Params ======
 args = getResolvedOptions(sys.argv, ['JOB_NAME'])
 
-# *** Use the correct catalog DB name here ***
-RAW_DB = "de_youtube_raw"          # <-- fixed
-RAW_TABLE = "raw_statistics"       # <-- confirm this table exists
-REGIONS = ["ca", "gb", "us"]       # predicate list
+RAW_DB = "de_youtube_raw"
+RAW_TABLE = "raw_statistics"
+REGIONS = ["ca", "gb", "us"]
 
-# Optional S3 fallback path if catalog/table not present (adjust if you want fallback)
 RAW_S3_PATH = "s3://<YOUR-RAW-BUCKET>/youtube/raw_statistics/"
-
-# Your target cleansed path (you had us-east-1 earlier—keep consistent region wide)
 CLEANSED_S3_PATH = "s3://saad-de-youtube-cleansed-us-east-1/youtube/raw_statistics/"
 
 # ====== Context ======
@@ -51,12 +47,10 @@ else:
     print(f"[WARN] Catalog table {RAW_DB}.{RAW_TABLE} not found. Fallback to S3 path: {RAW_S3_PATH}")
     datasource0 = glueContext.create_dynamic_frame.from_options(
         connection_type="s3",
-        format="json",  # change to "csv" if raw is CSV
+        format="json",
         connection_options={"paths": [RAW_S3_PATH], "recurse": True},
         transformation_ctx="datasource_path"
     )
-    # If folders are like .../region=us/ the column is inferred automatically.
-    # If not, ensure a 'region' field exists or derive it as needed.
     try:
         datasource0 = Filter.apply(
             frame=datasource0,
@@ -102,7 +96,7 @@ dropnullfields3 = DropNullFields.apply(
 )
 
 # ====== Coalesce & Write ======
-df = dropnullfields3.toDF().coalesce(1)  # single file per run
+df = dropnullfields3.toDF().coalesce(1)
 df_final = DynamicFrame.fromDF(df, glueContext, "df_final")
 
 datasink4 = glueContext.write_dynamic_frame.from_options(
