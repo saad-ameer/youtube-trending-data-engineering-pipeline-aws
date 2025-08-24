@@ -31,7 +31,7 @@ The dataset contains:
 
 ## Architecture
 
-![AWS Data Lake Architecture](docs/architecture.jpeg)
+![AWS Data Lake Architecture](architecture.jpeg)
 
 ---
 
